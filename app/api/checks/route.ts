@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { compute, topAxis, Q, QUESTIONS_VER, INFORMATIVA_VER, type Answers } from "@/lib/engine";
+import { sendResultEmail, emailConfigured } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
 
   const { data: salon, error: salonErr } = await supabase
     .from("salons")
-    .select("id")
+    .select("id, name")
     .eq("slug", salonSlug)
     .eq("is_active", true)
     .maybeSingle();
@@ -81,6 +82,23 @@ export async function POST(request: Request) {
 
   if (error) {
     return NextResponse.json({ error: "Salvataggio non riuscito" }, { status: 500 });
+  }
+
+  /* Invio del risultato via email, SOLO se la cliente ha dato quel consenso
+     e ha lasciato un indirizzo. Se l'invio fallisce, la scheda resta salvata
+     e la cliente non vede errori: l'email è un di più, non un requisito. */
+  const emailTo = isAnonymous ? null : trim(client?.email, 160);
+  if (emailTo && consents?.email && emailConfigured()) {
+    try {
+      await sendResultEmail({
+        to: emailTo,
+        firstName: trim(client?.firstName),
+        salonName: (salon as any).name || "Il tuo salone",
+        result,
+      });
+    } catch (e) {
+      console.error("Invio email risultato fallito:", e);
+    }
   }
 
   return NextResponse.json({ id: data.id, result });
