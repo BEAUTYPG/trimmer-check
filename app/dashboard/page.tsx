@@ -65,6 +65,12 @@ export default async function Dashboard() {
 
       <PublicLink slug={salon.slug} />
 
+      <div className="row" style={{ marginTop: 12 }}>
+        <Link href="/analisi" className="btn" style={{ textAlign: "center", textDecoration: "none" }}>
+          Analisi e funnel →
+        </Link>
+      </div>
+
       {rows.length > 0 && (
         <div style={{ marginTop: 26 }}>
           {rows.map((r) => {

@@ -54,7 +54,7 @@ export default async function Scheda({ params }: { params: { id: string } }) {
               <span>{a.label}</span>
               <b>{r?.pct?.[a.k] ?? 0}%</b>
             </div>
-            <div className="bar"><i style={{ width: `${r?.pct?.[a.k] ?? 0}%` }} /></div>
+            <div className="track t1"><i style={{ width: `${r?.pct?.[a.k] ?? 0}%` }} /></div>
           </div>
         ))}
       </div>

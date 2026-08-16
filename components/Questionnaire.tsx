@@ -291,7 +291,7 @@ export default function Questionnaire({
                   <span>{a.label}</span>
                   <b>{r.pct[a.k]}%</b>
                 </div>
-                <div className="bar"><i style={{ width: `${r.pct[a.k]}%` }} /></div>
+                <div className="track t1"><i style={{ width: `${r.pct[a.k]}%` }} /></div>
               </div>
             ))}
           </div>
