@@ -1,0 +1,42 @@
+TRIMMER CHECK — Aggiornamento v2.1
+"Due pulsanti per prenotare" + "Opzioni con immagine"
+=====================================================
+
+COSA CAMBIA
+-----------
+1) Pagina del risultato: ora ci sono DUE pulsanti
+   - "Prenota su WhatsApp"  → apre WhatsApp del salone con messaggio già scritto
+   - "Oppure chiama il salone" → fa partire la telefonata
+   Così funziona sia da cellulare che da computer, qualunque sia il numero.
+
+2) Le domande Q1 ("cosa vorresti migliorare") e Q4 ("come definiresti i tuoi
+   capelli") ora mostrano le risposte come CARD CON FOTO, come nel mockup.
+   Le 5 foto della Q4 si vedono da subito (arrivano dal web).
+   Le 5 foto della Q1 compaiono appena carichi i file nella cartella
+   public/q-imgs (vedi il LEGGIMI dentro quella cartella).
+
+COME CARICARE SU GITHUB (repo BEAUTYPG/trimmer-check)
+-----------------------------------------------------
+1. Apri il repo su github.com → entra nella cartella indicata → il file →
+   matita "Edit" oppure "Add file → Upload files" e trascina il file nuovo.
+   File da sostituire (4):
+   - app/globals.css
+   - components/Questionnaire.tsx
+   - lib/engine.ts
+   File NUOVO da aggiungere (1):
+   - components/OptImage.tsx   (dentro la cartella components)
+2. Ogni volta: "Commit changes" (pulsante verde).
+3. Vercel pubblica da solo in 1-2 minuti.
+
+IMPORTANTE — IL NUMERO DEL SALONE
+---------------------------------
+Perché i due pulsanti compaiano, in Supabase → Table Editor → salons →
+colonna "phone" del tuo salone scrivi:  0755000209
+(il numero fisso, quello collegato a WhatsApp Business).
+Il sistema aggiunge da solo il +39.
+
+VERIFICA
+--------
+Apri https://trimmer-check.vercel.app/q/beauty-5hul, completa il check:
+- Q1 e Q4 devono mostrare le card (Q4 già con le foto)
+- alla fine devono esserci i due pulsanti: WhatsApp e chiamata

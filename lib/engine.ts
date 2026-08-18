@@ -16,7 +16,14 @@ export type Opt = {
   tag?: string;
   alert?: string;
   none?: boolean;
+  /* Immagine dell'opzione (facoltativa).
+     img    = nome file in public/q-imgs (senza estensione: prova .jpg poi .png)
+     imgCdn = URL remoto di riserva finche' il file locale non c'e' */
+  img?: string;
+  imgCdn?: string;
 };
+
+const CDN = "https://media.horacle.ai/product-images/nano-banana/274dbab4-aaf4-45af-9eb5-fd47fe1bf075";
 
 export type Question = {
   code: string;
@@ -29,11 +36,11 @@ export type Question = {
 
 export const Q: Question[] = [
   { code: "Q1", text: "Quando pensi ai tuoi capelli, cosa vorresti migliorare prima di tutto?", opts: [
-    { l: "Più volume",                                       T:4, TM:2, AL:1, NO:0 },
-    { l: "Più lunghezza",                                    T:1, TM:3, AL:4, NO:0 },
-    { l: "Più densità in una zona",                          T:4, TM:2, AL:0, NO:0 },
-    { l: "Correggere un taglio o una forma",                 T:3, TM:2, AL:2, NO:0 },
-    { l: "Cambiare immagine senza aspettare la ricrescita",  T:2, TM:3, AL:3, NO:0 },
+    { l: "Più volume",                                       T:4, TM:2, AL:1, NO:0, img: "q1-volume" },
+    { l: "Più lunghezza",                                    T:1, TM:3, AL:4, NO:0, img: "q1-lunghezza" },
+    { l: "Più densità in una zona",                          T:4, TM:2, AL:0, NO:0, img: "q1-densita" },
+    { l: "Correggere un taglio o una forma",                 T:3, TM:2, AL:2, NO:0, img: "q1-taglio" },
+    { l: "Cambiare immagine senza aspettare la ricrescita",  T:2, TM:3, AL:3, NO:0, img: "q1-cambio" },
   ]},
   { code: "Q2", text: "Qual è il momento in cui senti maggiormente il disagio?", opts: [
     { l: "Quando mi guardo allo specchio",                   T:2, TM:2, AL:2, NO:0 },
@@ -49,11 +56,16 @@ export const Q: Question[] = [
     { l: "No, desidero più lunghezza o volume generale",     T:2, TM:3, AL:3, NO:0 },
   ]},
   { code: "Q4", text: "Come definiresti oggi i tuoi capelli?", opts: [
-    { l: "Fini o poco densi",                                T:5, TM:2, AL:0, NO:0, dAL:0.5, tag:"Capello che non regge peso" },
-    { l: "Fragili o sensibilizzati",                         T:5, TM:1, AL:0, NO:1, dAL:0.2, tag:"Capello delicato — priorità leggerezza" },
-    { l: "Corti e difficili da far crescere",                T:2, TM:3, AL:2, NO:0 },
-    { l: "Sani, ma poco voluminosi",                         T:4, TM:2, AL:1, NO:0 },
-    { l: "Sani e pieni: desidero una trasformazione estetica", T:2, TM:3, AL:4, NO:0 },
+    { l: "Fini o poco densi",                                T:5, TM:2, AL:0, NO:0, dAL:0.5, tag:"Capello che non regge peso",
+      img: "q4-fini",    imgCdn: `${CDN}/fcc10192b435b8ad974976e256e46d65-1787055456314.png` },
+    { l: "Fragili o sensibilizzati",                         T:5, TM:1, AL:0, NO:1, dAL:0.2, tag:"Capello delicato — priorità leggerezza",
+      img: "q4-fragili", imgCdn: `${CDN}/f1e854844ca89003a1cdb88e19cd83cb-1787055458824.png` },
+    { l: "Corti e difficili da far crescere",                T:2, TM:3, AL:2, NO:0,
+      img: "q4-corti",   imgCdn: `${CDN}/af915225363eeed5e5974603ee63e9e8-1787055470457.png` },
+    { l: "Sani, ma poco voluminosi",                         T:4, TM:2, AL:1, NO:0,
+      img: "q4-piatti",  imgCdn: `${CDN}/1c9a62372ce6b0049f8b6acac4a99217-1787055472469.png` },
+    { l: "Sani e pieni: desidero una trasformazione estetica", T:2, TM:3, AL:4, NO:0,
+      img: "q4-pieni",   imgCdn: `${CDN}/dffe6221fbbffdaef5c8b34a68a40a5c-1787055477914.png` },
   ]},
   { code: "Q5", text: "Come ami portarli nella vita di tutti i giorni?", opts: [
     { l: "Sciolti e naturali",                               T:2, TM:2, AL:2, NO:0 },

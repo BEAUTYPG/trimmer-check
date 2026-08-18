@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Q, AXES, INFORMATIVA, compute, topAxis, type Answers, type Result } from "@/lib/engine";
 import CaseImage from "@/components/CaseImage";
+import OptImage from "@/components/OptImage";
 
 /* =====================================================================
    TRIMMER CHECK v2 — struttura a schermate:
@@ -175,7 +176,11 @@ export default function Questionnaire({
     const msg = encodeURIComponent(
       "Ciao! Ho appena fatto il Trimmer Check e vorrei prenotare la consulenza in salone."
     );
-    return { href: `https://wa.me/${digits}?text=${msg}`, label: "Prenota la consulenza in salone" };
+    return {
+      href: `https://wa.me/${digits}?text=${msg}`,
+      tel: `tel:+${digits}`,
+      label: "Prenota su WhatsApp",
+    };
   })();
 
   /* ================= 0. COPERTINA ================= */
@@ -216,15 +221,28 @@ export default function Questionnaire({
         {group.qIdx.map((qi) => {
           const q = Q[qi];
           const a = answers[qi];
+          const visual = q.opts.some((o) => o.img); // domanda con immagini
           return (
             <div className="qgroup" key={q.code}>
               <div className="qt">{q.text}</div>
               {q.sub && <div className="tiny" style={{ marginBottom: 8 }}>{q.sub}</div>}
-              <div className="chips">
+              <div className={visual ? "imgopts" : "chips"}>
                 {q.opts.map((o, oi) => {
                   const sel = q.multi
                     ? Array.isArray(a) && a.includes(oi)
                     : a === oi;
+                  if (visual) {
+                    return (
+                      <button
+                        key={oi}
+                        className={`imgopt${sel ? " sel" : ""}`}
+                        onClick={() => (q.multi ? toggleMulti(qi, oi) : pickSingle(qi, oi))}
+                      >
+                        {o.img && <OptImage id={o.img} cdn={o.imgCdn} />}
+                        <span className="imgopt-l">{o.l}</span>
+                      </button>
+                    );
+                  }
                   return (
                     <button
                       key={oi}
@@ -401,11 +419,18 @@ export default function Questionnaire({
       )}
 
       {booking && (
-        <div className="row">
-          <a className="btn accent" style={{ textDecoration: "none", textAlign: "center" }} href={booking.href} target="_blank" rel="noreferrer">
-            {booking.label}
-          </a>
-        </div>
+        <>
+          <div className="row">
+            <a className="btn accent" style={{ textDecoration: "none", textAlign: "center" }} href={booking.href} target="_blank" rel="noreferrer">
+              {booking.label}
+            </a>
+          </div>
+          <div className="row" style={{ marginTop: 8 }}>
+            <a className="btn ghost" style={{ textDecoration: "none", textAlign: "center" }} href={booking.tel}>
+              Oppure chiama il salone
+            </a>
+          </div>
+        </>
       )}
 
       <p className="tiny" style={{ marginTop: 18, textAlign: "center" }}>

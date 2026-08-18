@@ -100,3 +100,13 @@
   .chip.wide{border-radius:12px;flex-basis:100%}
   .resmain{background:var(--accent-soft);border-radius:16px;padding:16px 18px;margin:12px 0 4px}
   .casecard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:20px 0 4px}
+
+  /* ---------- v2.1: opzioni con immagine ---------- */
+  .imgopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .imgopt{border:2px solid var(--line);background:var(--bg);border-radius:14px;overflow:hidden;
+    cursor:pointer;padding:0;font-family:inherit;color:var(--ink);text-align:left;
+    transition:border-color .15s ease, box-shadow .15s ease}
+  .imgopt.sel{border-color:var(--accent);box-shadow:0 4px 14px rgba(168,115,74,.22)}
+  .imgopt-l{display:block;padding:9px 11px;font-size:13px;line-height:1.35;font-weight:500}
+  .imgopt.sel .imgopt-l{font-weight:700;color:var(--accent)}
+  @media (min-width:560px){.imgopts{grid-template-columns:repeat(3,1fr)}}
