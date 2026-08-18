@@ -164,21 +164,18 @@ export default function Questionnaire({
     </div>
   );
 
-  /* Bottone prenotazione: cellulare → WhatsApp; numero fisso → chiamata. */
+  /* Bottone prenotazione: apre WhatsApp verso il numero del salone.
+     Nel campo phone va il numero registrato su WhatsApp (Business),
+     fisso o cellulare che sia. */
   const booking = (() => {
     if (!salonPhone) return null;
     let digits = salonPhone.replace(/\D/g, "");
     if (!digits) return null;
     if (!digits.startsWith("39")) digits = "39" + digits;
-    const national = digits.slice(2);
-    const isMobile = national.startsWith("3");
-    if (isMobile) {
-      const msg = encodeURIComponent(
-        "Ciao! Ho appena fatto il Trimmer Check e vorrei prenotare la consulenza in salone."
-      );
-      return { href: `https://wa.me/${digits}?text=${msg}`, label: "Prenota la consulenza in salone" };
-    }
-    return { href: `tel:+${digits}`, label: "Chiama il salone per prenotare" };
+    const msg = encodeURIComponent(
+      "Ciao! Ho appena fatto il Trimmer Check e vorrei prenotare la consulenza in salone."
+    );
+    return { href: `https://wa.me/${digits}?text=${msg}`, label: "Prenota la consulenza in salone" };
   })();
 
   /* ================= 0. COPERTINA ================= */
