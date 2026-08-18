@@ -164,15 +164,21 @@ export default function Questionnaire({
     </div>
   );
 
-  const waBooking = (() => {
+  /* Bottone prenotazione: cellulare → WhatsApp; numero fisso → chiamata. */
+  const booking = (() => {
     if (!salonPhone) return null;
-    const digits = salonPhone.replace(/\D/g, "");
+    let digits = salonPhone.replace(/\D/g, "");
     if (!digits) return null;
-    const d = digits.length === 10 && digits.startsWith("3") ? "39" + digits : digits;
-    const msg = encodeURIComponent(
-      `Ciao! Ho appena fatto il Trimmer Check e vorrei prenotare la consulenza in salone.`
-    );
-    return `https://wa.me/${d}?text=${msg}`;
+    if (!digits.startsWith("39")) digits = "39" + digits;
+    const national = digits.slice(2);
+    const isMobile = national.startsWith("3");
+    if (isMobile) {
+      const msg = encodeURIComponent(
+        "Ciao! Ho appena fatto il Trimmer Check e vorrei prenotare la consulenza in salone."
+      );
+      return { href: `https://wa.me/${digits}?text=${msg}`, label: "Prenota la consulenza in salone" };
+    }
+    return { href: `tel:+${digits}`, label: "Chiama il salone per prenotare" };
   })();
 
   /* ================= 0. COPERTINA ================= */
@@ -397,10 +403,10 @@ export default function Questionnaire({
         </div>
       )}
 
-      {waBooking && (
+      {booking && (
         <div className="row">
-          <a className="btn accent" style={{ textDecoration: "none", textAlign: "center" }} href={waBooking} target="_blank" rel="noreferrer">
-            Prenota la consulenza in salone
+          <a className="btn accent" style={{ textDecoration: "none", textAlign: "center" }} href={booking.href} target="_blank" rel="noreferrer">
+            {booking.label}
           </a>
         </div>
       )}
