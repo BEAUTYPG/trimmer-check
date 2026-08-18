@@ -1,42 +1,67 @@
-TRIMMER CHECK — Aggiornamento v2.1
-"Due pulsanti per prenotare" + "Opzioni con immagine"
+TRIMMER CHECK — aggiornamento v2.2
+Copertina VIDA + risposte con foto senza card spaiate
 =====================================================
 
-COSA CAMBIA
------------
-1) Pagina del risultato: ora ci sono DUE pulsanti
-   - "Prenota su WhatsApp"  → apre WhatsApp del salone con messaggio già scritto
-   - "Oppure chiama il salone" → fa partire la telefonata
-   Così funziona sia da cellulare che da computer, qualunque sia il numero.
+COSA CAMBIA PER CHI COMPILA
+---------------------------
+1. COPERTINA NUOVA. Al posto della foto caso 1 c'e' la modella del poster
+   VIDA, ritagliata sul volto e sulle onde, con il titolo sopra l'immagine:
+   "Non togliamo nulla. Aggiungiamo quello che desideri."
+   Sotto: la frase di metodo e il pulsante "Inizia".
 
-2) Le domande Q1 ("cosa vorresti migliorare") e Q4 ("come definiresti i tuoi
-   capelli") ora mostrano le risposte come CARD CON FOTO, come nel mockup.
-   Le 5 foto della Q4 si vedono da subito (arrivano dal web).
-   Le 5 foto della Q1 compaiono appena carichi i file nella cartella
-   public/q-imgs (vedi il LEGGIMI dentro quella cartella).
+2. RISPOSTE CON FOTO PIU' ORDINATE. Le domande con le foto (la 1 e la 4)
+   hanno cinque risposte: in griglia l'ultima restava sempre spaiata.
+   Ora le prime quattro stanno in griglia e la quinta — il desiderio —
+   prende tutta la riga, con la scritta "IL MIO DESIDERIO".
 
-COME CARICARE SU GITHUB (repo BEAUTYPG/trimmer-check)
------------------------------------------------------
-1. Apri il repo su github.com → entra nella cartella indicata → il file →
-   matita "Edit" oppure "Add file → Upload files" e trascina il file nuovo.
-   File da sostituire (4):
-   - app/globals.css
-   - components/Questionnaire.tsx
-   - lib/engine.ts
-   File NUOVO da aggiungere (1):
-   - components/OptImage.tsx   (dentro la cartella components)
-2. Ogni volta: "Commit changes" (pulsante verde).
-3. Vercel pubblica da solo in 1-2 minuti.
+3. LE FOTO DELLA DOMANDA 1 SI VEDONO. Erano state caricate in una cartella
+   sbagliata: le ho spostate al posto giusto. Prima la Domanda 1 mostrava
+   solo testo e la Domanda 4 si appoggiava a un sito esterno.
 
-IMPORTANTE — IL NUMERO DEL SALONE
----------------------------------
-Perché i due pulsanti compaiano, in Supabase → Table Editor → salons →
-colonna "phone" del tuo salone scrivi:  0755000209
-(il numero fisso, quello collegato a WhatsApp Business).
-Il sistema aggiunge da solo il +39.
+IMPORTANTE: le domande, le risposte e i punteggi NON sono cambiati.
+E' solo il modo in cui le cose appaiono. Le schede gia' raccolte restano
+confrontabili con quelle nuove.
 
-VERIFICA
---------
-Apri https://trimmer-check.vercel.app/q/beauty-5hul, completa il check:
-- Q1 e Q4 devono mostrare le card (Q4 già con le foto)
-- alla fine devono esserci i due pulsanti: WhatsApp e chiamata
+COME SI CARICA (il solito modo)
+-------------------------------
+1. Apri https://github.com/BEAUTYPG/trimmer-check
+   (attenzione: account BEAUTYPG, non "beautyperugia")
+2. Bottone "Add file" -> "Upload files"
+3. Trascina dentro le TRE CARTELLE che trovi in questo pacchetto:
+      app
+      components
+      public
+   Trascinale intere, non i file singoli.
+4. In fondo alla pagina: "Commit changes".
+5. Vercel ripubblica da solo in 1-2 minuti.
+6. Controlla su https://trimmer-check.vercel.app/q/beauty-5hul
+   (se vedi ancora la vecchia copertina, ricarica la pagina)
+
+UNA COSA CHE DEVI FARE TU, UNA VOLTA SOLA
+-----------------------------------------
+Caricando file non si cancella niente, quindi restano nel repo due cartelle
+doppie alla RADICE, che non servono e confondono:
+      q-imgs
+      cases
+Le versioni buone sono dentro public/. Per cancellarle: apri la cartella su
+github.com, entra in un file, bottone "..." in alto a destra -> Delete file
+-> Commit. Ripeti per ogni file dentro quelle due cartelle: quando la
+cartella resta vuota, GitHub la fa sparire da sola.
+
+FILE CONTENUTI NEL PACCHETTO
+----------------------------
+app/globals.css              stili: copertina e card delle risposte
+components/Questionnaire.tsx schermata di copertina + card larga
+components/OptImage.tsx      immagine delle risposte (2 formati)
+components/CoverImage.tsx    NUOVO: immagine di copertina, con riserva
+public/cover/hero.jpg        NUOVO: la foto di copertina (244 KB)
+public/q-imgs/*.jpg          le 10 foto delle risposte, al posto giusto
+public/q-imgs/LEGGIMI-foto.txt
+
+SE QUALCOSA NON VA
+------------------
+- Copertina senza foto ma con il titolo su fondo marrone: manca il file
+  public/cover/hero.jpg, ricarica la cartella public.
+- Risposte senza foto: manca public/q-imgs, stessa cosa.
+Il sito in ogni caso non si rompe: e' costruito per continuare a funzionare
+anche se un'immagine non arriva.

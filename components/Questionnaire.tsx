@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Q, AXES, INFORMATIVA, compute, topAxis, type Answers, type Result } from "@/lib/engine";
 import CaseImage from "@/components/CaseImage";
 import OptImage from "@/components/OptImage";
+import CoverImage from "@/components/CoverImage";
 
 /* =====================================================================
    TRIMMER CHECK v2 — struttura a schermate:
@@ -12,6 +13,10 @@ import OptImage from "@/components/OptImage";
    Il MOTORE (lib/engine.ts) e' invariato: stesse 9 domande, stessi
    punteggi. Cambia solo come vengono presentate.
    ===================================================================== */
+
+/* Testo che introduce la card larga (l'ultima opzione delle domande
+   con foto, quando sono in numero dispari). */
+const WIDE_KICKER = "Il mio desiderio";
 
 const GROUPS: { kicker: string; title: string; qIdx: number[] }[] = [
   { kicker: "Il tuo desiderio",     title: "Partiamo da cosa vorresti",   qIdx: [0, 1, 2] },
@@ -189,13 +194,16 @@ export default function Questionnaire({
       <>
         <div className="top"><span className="brand">{salonName}</span></div>
         <div className="hero">
-          <CaseImage caseId={1} height={220} />
+          <CoverImage />
           <div className="hero-badge">⏱ 2 minuti</div>
+          <div className="hero-over">
+            <em>Trimmer Technology · VIDA Hair</em>
+            <b>Non togliamo nulla.<br />Aggiungiamo quello<br />che desideri.</b>
+          </div>
         </div>
-        <h1>Scopri la strada giusta per i tuoi capelli</h1>
-        <p className="muted" style={{ marginTop: 8 }}>
-          Nove domande, nessun impegno. Alla fine ti proponiamo l&apos;orientamento
-          più adatto a te — da valutare insieme in salone.
+        <p className="muted" style={{ marginTop: 4 }}>
+          Volume, lunghezza, colore — nel massimo rispetto della tua capigliatura.
+          Nove domande per capire da dove partire.
         </p>
         <div className="row">
           <button className="btn accent" onClick={() => goTo(1)}>Inizia</button>
@@ -232,6 +240,25 @@ export default function Questionnaire({
                     ? Array.isArray(a) && a.includes(oi)
                     : a === oi;
                   if (visual) {
+                    /* con un numero dispari di opzioni l'ultima card resterebbe
+                       spaiata nella griglia: la stendiamo su tutta la riga. */
+                    const wide =
+                      q.opts.length % 2 === 1 && oi === q.opts.length - 1;
+                    if (wide) {
+                      return (
+                        <button
+                          key={oi}
+                          className={`wideopt${sel ? " sel" : ""}`}
+                          onClick={() => (q.multi ? toggleMulti(qi, oi) : pickSingle(qi, oi))}
+                        >
+                          {o.img && <OptImage id={o.img} cdn={o.imgCdn} wide />}
+                          <span className="wideopt-t">
+                            <em>{WIDE_KICKER}</em>
+                            {o.l}
+                          </span>
+                        </button>
+                      );
+                    }
                     return (
                       <button
                         key={oi}

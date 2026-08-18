@@ -9,8 +9,18 @@ import { useState } from "react";
  *   2. /q-imgs/<id>.png
  *   3. URL remoto (immagine generata, finche' non self-hostiamo)
  * Se non trova nulla, non mostra niente: resta il testo dell'opzione.
+ *
+ * wide = true -> immagine a sinistra nella card larga (ultima opzione).
  */
-export default function OptImage({ id, cdn }: { id: string; cdn?: string }) {
+export default function OptImage({
+  id,
+  cdn,
+  wide = false,
+}: {
+  id: string;
+  cdn?: string;
+  wide?: boolean;
+}) {
   // 0 = jpg locale, 1 = png locale, 2 = cdn, 3 = nulla
   const [stage, setStage] = useState(0);
 
@@ -28,7 +38,7 @@ export default function OptImage({ id, cdn }: { id: string; cdn?: string }) {
       alt=""
       loading="lazy"
       onError={() => setStage((s) => s + 1)}
-      style={{ width: "100%", height: 110, objectFit: "cover", display: "block" }}
+      className={wide ? "optimg-wide" : "optimg"}
     />
   );
 }

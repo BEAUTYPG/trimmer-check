@@ -101,12 +101,45 @@
   .resmain{background:var(--accent-soft);border-radius:16px;padding:16px 18px;margin:12px 0 4px}
   .casecard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:20px 0 4px}
 
-  /* ---------- v2.1: opzioni con immagine ---------- */
+  /* ---------- v2.2: opzioni con immagine (griglia 2 col + card larga) ----------
+     Cinque opzioni in griglia lasciano sempre una card spaiata: le prime
+     quattro stanno in griglia, l'ultima (il desiderio) prende tutta la riga.
+     Il numero delle opzioni e i punteggi non cambiano: e' solo impaginazione. */
   .imgopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .imgopt{border:2px solid var(--line);background:var(--bg);border-radius:14px;overflow:hidden;
+  .imgopt{border:2px solid var(--line);background:var(--card);border-radius:14px;overflow:hidden;
     cursor:pointer;padding:0;font-family:inherit;color:var(--ink);text-align:left;
+    display:flex;flex-direction:column;
     transition:border-color .15s ease, box-shadow .15s ease}
   .imgopt.sel{border-color:var(--accent);box-shadow:0 4px 14px rgba(168,115,74,.22)}
-  .imgopt-l{display:block;padding:9px 11px;font-size:13px;line-height:1.35;font-weight:500}
+  .imgopt-l{display:flex;align-items:center;min-height:54px;padding:9px 11px;
+    font-size:13px;line-height:1.3;font-weight:500}
   .imgopt.sel .imgopt-l{font-weight:700;color:var(--accent)}
-  @media (min-width:560px){.imgopts{grid-template-columns:repeat(3,1fr)}}
+  .optimg{display:block;width:100%;height:118px;object-fit:cover;object-position:50% 32%}
+
+  /* la card larga: ultima opzione, tutta la riga */
+  .wideopt{grid-column:1 / -1;display:flex;align-items:stretch;border:2px solid var(--line);
+    background:var(--card);border-radius:14px;overflow:hidden;cursor:pointer;padding:0;
+    font-family:inherit;color:var(--ink);text-align:left;
+    transition:border-color .15s ease, box-shadow .15s ease}
+  .wideopt.sel{border-color:var(--accent);box-shadow:0 4px 14px rgba(168,115,74,.22)}
+  .wideopt-t{align-self:center;padding:13px 15px;font-size:14px;line-height:1.3;font-weight:500}
+  .wideopt-t em{display:block;font-style:normal;font-size:10px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:5px;white-space:nowrap}
+  .wideopt.sel .wideopt-t{font-weight:700;color:var(--accent)}
+  .optimg-wide{display:block;flex:0 0 auto;width:120px;min-height:104px;height:auto;
+    align-self:stretch;object-fit:cover;object-position:50% 30%}
+
+  /* ---------- v2.2: copertina ---------- */
+  .hero-img{display:block;width:100%}
+  .hero-fallback{width:100%;aspect-ratio:4/5;background:linear-gradient(160deg,var(--accent2),#8E6647)}
+  .hero-over{position:absolute;left:0;right:0;bottom:0;padding:22px 18px 24px;color:#fff;
+    background:linear-gradient(to top,rgba(40,26,16,.74),rgba(40,26,16,.30) 55%,rgba(40,26,16,0))}
+  .hero-over em{display:block;font-style:normal;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;opacity:.88;margin-bottom:7px}
+  .hero-over b{display:block;font-family:ui-serif,Georgia,"Times New Roman",serif;
+    font-size:27px;line-height:1.14;font-weight:600;letter-spacing:-.3px}
+  @media (max-width:360px){
+    .hero-over b{font-size:23px}
+    .optimg-wide{width:104px}
+    .wideopt-t{padding:12px 13px;font-size:13.5px}
+  }

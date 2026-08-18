@@ -1,34 +1,36 @@
 CARTELLA public/q-imgs — le foto delle risposte
 ================================================
-Qui vanno le 10 immagini generate su Horacle (nessun nuovo credito:
-sono già tue, basta scaricarle dalla tua galleria su app.horacle.ai).
 
-COME FARE
----------
-1. Vai su app.horacle.ai → le tue generazioni: troverai le 10 immagini
-   "salone beige, cliente di spalle" generate oggi.
-2. Scaricale e rinominale ESATTAMENTE così (va bene .png o .jpg):
+STATO: a posto. Le 10 immagini sono dentro questa cartella.
 
-   DOMANDA 1 — cosa vorresti migliorare
-   q1-volume.png      → l'immagine sul VOLUME (capelli piatti, poco corpo)
-   q1-lunghezza.png   → l'immagine sulla LUNGHEZZA
-   q1-densita.png     → l'immagine sulla DENSITÀ in una zona
-   q1-taglio.png      → l'immagine sul TAGLIO/FORMA da correggere
-   q1-cambio.png      → l'immagine sul CAMBIO DI IMMAGINE
+Le foto erano state caricate per errore in una cartella "q-imgs" alla RADICE
+del repo, dove Next.js non le legge. Per questo la Domanda 1 restava senza
+foto e la Domanda 4 si vedeva solo grazie al ripiego sul CDN esterno.
+Ora sono al posto giusto e il sito le serve da solo.
 
-   DOMANDA 4 — come sono i tuoi capelli oggi
-   q4-fini.png        → capelli fini, lisci, poco densi
-   q4-fragili.png     → capelli rovinati, crespi, spezzati
-   q4-corti.png       → caschetto corto
-   q4-piatti.png      → capelli sani, lisci e lucidi ma piatti
-   q4-pieni.png       → capelli sani, mossi e pieni
+DA FARE UNA VOLTA SOLA SU GITHUB (dal browser, io non posso cancellare file):
+cancellare le due cartelle rimaste alla RADICE del repo, sono doppioni:
+  - q-imgs
+  - cases
+Le versioni buone sono public/q-imgs e public/cases.
+Come si fa: apri la cartella su github.com, entra in un file, bottone "..."
+in alto a destra -> Delete file -> Commit. Ripeti per gli altri file.
 
-3. Caricale in questa cartella su GitHub:
-   repo → public → q-imgs → "Add file → Upload files" → Commit changes.
+I NOMI DEI FILE (non cambiarli: il codice li cerca cosi')
+---------------------------------------------------------
+DOMANDA 1 — cosa vorresti migliorare
+  q1-volume.jpg      volume
+  q1-lunghezza.jpg   lunghezza
+  q1-densita.jpg     densita' in una zona
+  q1-taglio.jpg      taglio o forma da correggere
+  q1-cambio.jpg      cambio di immagine
 
-NOTA
-----
-Le 5 della Domanda 4 si vedono già anche SENZA questo caricamento
-(il sito le prende dal web). Caricarle qui le rende però più veloci e
-indipendenti: appena puoi, carica tutte e 10.
-Le 5 della Domanda 1 invece compaiono SOLO dopo questo caricamento.
+DOMANDA 4 — come sono i tuoi capelli oggi
+  q4-fini.jpg        fini, lisci, poco densi
+  q4-fragili.jpg     rovinati, crespi, spezzati
+  q4-corti.jpg       caschetto corto
+  q4-piatti.jpg      sani e lucidi ma piatti
+  q4-pieni.jpg       sani, mossi e pieni
+
+Se un domani sostituisci una foto, tieni lo stesso nome e ricaricala qui:
+va bene .jpg o .png, meglio intorno ai 560 pixel di lato e sotto i 100 KB.
