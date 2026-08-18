@@ -11,14 +11,22 @@ export default async function PublicQuestionnaire({
 }) {
   const supabase = createClient();
 
+  // select("*") cosi' la pagina funziona anche se la colonna phone
+  // non e' ancora stata aggiunta con la migrazione.
   const { data: salon } = await supabase
     .from("salons")
-    .select("id, name, slug, city, is_active")
+    .select("*")
     .eq("slug", params.slug)
     .eq("is_active", true)
     .maybeSingle();
 
   if (!salon) notFound();
 
-  return <Questionnaire salonSlug={salon.slug} salonName={salon.name} />;
+  return (
+    <Questionnaire
+      salonSlug={salon.slug}
+      salonName={salon.name}
+      salonPhone={(salon as any).phone ?? null}
+    />
+  );
 }
