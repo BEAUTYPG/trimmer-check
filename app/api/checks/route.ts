@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { compute, topAxis, Q, QUESTIONS_VER, INFORMATIVA_VER, type Answers } from "@/lib/engine";
-import { sendResultEmail, emailConfigured } from "@/lib/email";
+import { sendResultEmail, sendSalonNotifyEmail, emailConfigured } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
   const { data: salon, error: salonErr } = await supabase
     .from("salons")
-    .select("id, name")
+    .select("id, name, notify_email")
     .eq("slug", salonSlug)
     .eq("is_active", true)
     .maybeSingle();
@@ -56,6 +56,29 @@ export async function POST(request: Request) {
 
   const trim = (v: unknown, max = 120) =>
     typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null;
+
+  const notifyTo = trim((salon as any).notify_email, 160);
+  const salonName = (salon as any).name || "Il tuo salone";
+
+  /* MODALITÀ ANONIMA: la promessa alla cliente è "nessun dato salvato",
+     e resta vera — qui NON si scrive nessuna riga. Parte solo l'avviso
+     al salone, con il solo orientamento: né nome, né contatti, né link. */
+  if (isAnonymous) {
+    if (notifyTo && emailConfigured()) {
+      try {
+        await sendSalonNotifyEmail({
+          to: notifyTo,
+          salonName,
+          result,
+          checkId: null,
+          isAnonymous: true,
+        });
+      } catch (e) {
+        console.error("Avviso salone (anonima) fallito:", e);
+      }
+    }
+    return NextResponse.json({ anonymous: true, result });
+  }
 
   const { data, error } = await supabase
     .from("checks")
@@ -82,6 +105,27 @@ export async function POST(request: Request) {
 
   if (error) {
     return NextResponse.json({ error: "Salvataggio non riuscito" }, { status: 500 });
+  }
+
+  /* AVVISO AL SALONE: parte a ogni scheda salvata, verso salons.notify_email.
+     Se fallisce, pazienza: la scheda è già al sicuro nel database. */
+  if (notifyTo && emailConfigured()) {
+    try {
+      await sendSalonNotifyEmail({
+        to: notifyTo,
+        salonName,
+        result,
+        checkId: data.id,
+        isAnonymous: false,
+        firstName: trim(client?.firstName),
+        lastName: trim(client?.lastName),
+        phone: trim(client?.phone, 40),
+        email: trim(client?.email, 160),
+        source: source === "salon" ? "salon" : "public",
+      });
+    } catch (e) {
+      console.error("Avviso salone fallito:", e);
+    }
   }
 
   /* Invio del risultato via email, SOLO se la cliente ha dato quel consenso

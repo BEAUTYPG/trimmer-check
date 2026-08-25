@@ -19,7 +19,8 @@ export default async function Home() {
       <h1>Area salone</h1>
       <p className="muted" style={{ marginTop: 10 }}>
         Accedi per raccogliere e rivedere le schede delle tue clienti.
-        Non serve una password: ti arriva un link via email.
+        Entra con email e password; se non l&apos;hai ancora impostata,
+        puoi farti mandare un link via email.
       </p>
 
       <LoginForm />

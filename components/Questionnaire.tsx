@@ -125,7 +125,22 @@ export default function Questionnaire({
 
   /* ---------- salvataggio ---------- */
   async function save(finalAnswers: Answers, anon: boolean) {
-    if (anon) return;
+    if (anon) {
+      /* Prova anonima: il server NON salva nulla (la promessa alla cliente
+         resta vera), ma avvisa il salone che il questionario è stato usato.
+         Se la chiamata fallisce, nessun messaggio: non c'è niente da perdere. */
+      void fetch("/api/checks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          salonSlug,
+          answers: finalAnswers,
+          source: "public",
+          client: { anonymous: true },
+        }),
+      }).catch(() => {});
+      return;
+    }
     setSaving(true);
     setSaveError("");
     try {

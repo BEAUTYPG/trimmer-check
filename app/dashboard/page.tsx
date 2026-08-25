@@ -71,6 +71,10 @@ export default async function Dashboard() {
         </Link>
       </div>
 
+      <p className="tiny" style={{ marginTop: 10, textAlign: "center" }}>
+        <Link href="/password">Imposta o cambia la password di accesso</Link>
+      </p>
+
       {rows.length > 0 && (
         <div style={{ marginTop: 26 }}>
           {rows.map((r) => {

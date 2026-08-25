@@ -1,67 +1,76 @@
-TRIMMER CHECK — aggiornamento v2.2
-Copertina VIDA + risposte con foto senza card spaiate
-=====================================================
+TRIMMER CHECK — aggiornamento del 25 agosto 2026
+Login con password + avviso email al salone a ogni questionario
 
-COSA CAMBIA PER CHI COMPILA
----------------------------
-1. COPERTINA NUOVA. Al posto della foto caso 1 c'e' la modella del poster
-   VIDA, ritagliata sul volto e sulle onde, con il titolo sopra l'immagine:
-   "Non togliamo nulla. Aggiungiamo quello che desideri."
-   Sotto: la frase di metodo e il pulsante "Inizia".
+=====================================================================
+COSA CAMBIA
+=====================================================================
 
-2. RISPOSTE CON FOTO PIU' ORDINATE. Le domande con le foto (la 1 e la 4)
-   hanno cinque risposte: in griglia l'ultima restava sempre spaiata.
-   Ora le prime quattro stanno in griglia e la quinta — il desiderio —
-   prende tutta la riga, con la scritta "IL MIO DESIDERIO".
+1) ACCESSO ALL'AREA SALONE CON PASSWORD
+   - Nella pagina di accesso ora si entra con email + password.
+   - Il link via email resta come riserva (per chi non ha ancora la
+     password o l'ha dimenticata).
+   - Nuova pagina "La tua password": si apre dalla dashboard, dalla
+     scritta "Imposta o cambia la password di accesso".
 
-3. LE FOTO DELLA DOMANDA 1 SI VEDONO. Erano state caricate in una cartella
-   sbagliata: le ho spostate al posto giusto. Prima la Domanda 1 mostrava
-   solo testo e la Domanda 4 si appoggiava a un sito esterno.
+2) AVVISO EMAIL AL SALONE A OGNI SCHEDA
+   - A ogni questionario completato parte un'email all'indirizzo del
+     salone (campo notify_email nel database; per Beauty:
+     barcacciac@gmail.com).
+   - L'email contiene: nome e contatti se lasciati, orientamento con
+     le barre, cautele tecniche, RIQUADRO ROSSO in caso di alert
+     sanitario, e il pulsante "Apri la scheda".
+   - Prova anonima: arriva comunque un avviso, ma ridotto — solo
+     l'orientamento, senza nome, senza contatti e senza link. Nel
+     database non viene salvato NULLA: la promessa alla cliente
+     ("nessun dato salvato") resta vera.
+   - Se l'invio fallisce, la scheda si salva lo stesso: l'email non
+     blocca mai niente.
 
-IMPORTANTE: le domande, le risposte e i punteggi NON sono cambiati.
-E' solo il modo in cui le cose appaiono. Le schede gia' raccolte restano
-confrontabili con quelle nuove.
+=====================================================================
+COSA DEVI FARE TU (nell'ordine)
+=====================================================================
 
-COME SI CARICA (il solito modo)
--------------------------------
-1. Apri https://github.com/BEAUTYPG/trimmer-check
-   (attenzione: account BEAUTYPG, non "beautyperugia")
-2. Bottone "Add file" -> "Upload files"
-3. Trascina dentro le TRE CARTELLE che trovi in questo pacchetto:
-      app
-      components
-      public
-   Trascinale intere, non i file singoli.
-4. In fondo alla pagina: "Commit changes".
-5. Vercel ripubblica da solo in 1-2 minuti.
-6. Controlla su https://trimmer-check.vercel.app/q/beauty-5hul
-   (se vedi ancora la vecchia copertina, ricarica la pagina)
+PASSO 1 — Database (una volta sola, 1 minuto)
+   Supabase (account barcacciac@gmail.com) > SQL Editor > incolla il
+   contenuto del file  supabase/migration-notify-email.sql  e premi
+   Run. In fondo deve comparire il salone Beauty con
+   notify_email = barcacciac@gmail.com.
 
-UNA COSA CHE DEVI FARE TU, UNA VOLTA SOLA
------------------------------------------
-Caricando file non si cancella niente, quindi restano nel repo due cartelle
-doppie alla RADICE, che non servono e confondono:
-      q-imgs
-      cases
-Le versioni buone sono dentro public/. Per cancellarle: apri la cartella su
-github.com, entra in un file, bottone "..." in alto a destra -> Delete file
--> Commit. Ripeti per ogni file dentro quelle due cartelle: quando la
-cartella resta vuota, GitHub la fa sparire da sola.
+PASSO 2 — Caricare i file su GitHub
+   Vai su github.com/BEAUTYPG/trimmer-check (pagina principale).
+   Trascina dentro le cartelle  app  components  lib  supabase
+   estratte da questo zip > "Commit changes".
+   Vercel pubblica da solo in 1-2 minuti.
 
-FILE CONTENUTI NEL PACCHETTO
-----------------------------
-app/globals.css              stili: copertina e card delle risposte
-components/Questionnaire.tsx schermata di copertina + card larga
-components/OptImage.tsx      immagine delle risposte (2 formati)
-components/CoverImage.tsx    NUOVO: immagine di copertina, con riserva
-public/cover/hero.jpg        NUOVO: la foto di copertina (244 KB)
-public/q-imgs/*.jpg          le 10 foto delle risposte, al posto giusto
-public/q-imgs/LEGGIMI-foto.txt
+PASSO 3 — Impostare la TUA password (prima volta)
+   Vai su https://trimmer-check.vercel.app, entra con "Entra con il
+   link via email" (come hai sempre fatto). Una volta dentro, tocca
+   "Imposta o cambia la password di accesso", scegli una password di
+   almeno 8 caratteri e salvala. Dalla volta dopo: email + password,
+   dentro subito.
 
-SE QUALCOSA NON VA
-------------------
-- Copertina senza foto ma con il titolo su fondo marrone: manca il file
-  public/cover/hero.jpg, ricarica la cartella public.
-- Risposte senza foto: manca public/q-imgs, stessa cosa.
-Il sito in ogni caso non si rompe: e' costruito per continuare a funzionare
-anche se un'immagine non arriva.
+PASSO 4 — Verifica (5 minuti)
+   a) Esci ed entra di nuovo con email + password.
+   b) Compila una scheda di prova da /q/beauty-5hul con nome e
+      telefono finti: deve arrivare l'email "Nuova scheda Trimmer
+      Check" su barcacciac@gmail.com, con il pulsante che apre la
+      scheda.
+   c) Compila una prova ANONIMA: deve arrivare l'avviso ridotto, e
+      nella dashboard NON deve comparire nessuna scheda nuova.
+   d) Se hai una scheda con risposta "diradamento" o "cuoio
+      capelluto" alla domanda 9: l'email deve avere il riquadro
+      rosso.
+
+=====================================================================
+NOTE
+=====================================================================
+
+- Nessuna chiave o password sta in questi file: l'invio usa le
+  variabili SMTP gia' presenti su Vercel (Resend, trimmer@crinis.it).
+- Il motore del questionario NON e' stato toccato: stesse domande,
+  stessi punteggi, schede vecchie e nuove restano confrontabili.
+- Facoltativo, quando vuoi: i link di accesso via email di Supabase
+  a volte sono lenti o finiscono in spam. Ora conta poco (si entra
+  con la password), ma se vuoi sistemare anche quelli si collega
+  Resend come SMTP di Supabase: dimmelo e ti preparo la guida
+  passo-passo.

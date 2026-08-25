@@ -136,3 +136,132 @@ export async function sendResultEmail(opts: {
     html,
   });
 }
+
+/* =====================================================================
+   AVVISO AL SALONE — parte a ogni questionario completato.
+   Va all'indirizzo in salons.notify_email. Se il campo è vuoto,
+   l'avviso viene semplicemente saltato. L'invio non blocca MAI il
+   salvataggio della scheda: se fallisce, la scheda resta al suo posto.
+   ===================================================================== */
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://trimmer-check.vercel.app";
+
+const RED = "#B4322E", RED_SOFT = "#F7E3E2";
+
+export async function sendSalonNotifyEmail(opts: {
+  to: string;
+  salonName: string;
+  result: Result;
+  /** null = prova anonima: niente scheda salvata, niente link */
+  checkId: string | null;
+  isAnonymous: boolean;
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  source?: string | null;
+}): Promise<void> {
+  if (!emailConfigured()) return;
+
+  const { to, salonName, result, checkId, isAnonymous } = opts;
+
+  const nome = isAnonymous
+    ? "Prova anonima"
+    : [opts.firstName, opts.lastName].filter((v) => v && v.trim()).join(" ").trim() || "Senza nome";
+
+  let best: AxisKey = "T";
+  (Object.keys(result.pct) as AxisKey[]).forEach((k) => {
+    if (result.pct[k] > result.pct[best]) best = k;
+  });
+  const top = AXES.find((a) => a.k === best)!;
+
+  const subject = result.hasAlert
+    ? `⚠ Nuova scheda con segnalazione — ${nome}`
+    : `Nuova scheda Trimmer Check — ${nome}`;
+
+  /* badge rosso: alert sanitario da valutare in salone */
+  const badge = result.hasAlert
+    ? `
+      <div style="background:${RED_SOFT};border:1px solid ${RED};border-radius:12px;padding:12px 16px;margin:0 0 16px">
+        <div style="font-size:14px;font-weight:bold;color:${RED};letter-spacing:.06em;text-transform:uppercase">
+          Segnalazione da valutare
+        </div>
+        <ul style="margin:8px 0 0 18px;color:${INK};font-size:14px">
+          ${result.alerts.map((a) => `<li>${a}</li>`).join("")}
+        </ul>
+        <div style="font-size:13px;color:${SOFT};margin-top:8px">
+          L&rsquo;orientamento è sospeso: serve la valutazione in salone.
+        </div>
+      </div>`
+    : "";
+
+  const contatti = isAnonymous
+    ? `<p style="margin:0 0 14px;color:${SOFT}">Prova anonima: la cliente non ha
+       lasciato dati e nessuna scheda è stata salvata. Questo è solo un avviso
+       che il questionario è stato usato.</p>`
+    : `
+      <table cellpadding="0" cellspacing="0" style="margin:0 0 16px;font-size:15px;color:${INK}">
+        <tr><td style="color:${SOFT};padding-right:14px">Nome</td><td><b>${nome}</b></td></tr>
+        ${opts.phone ? `<tr><td style="color:${SOFT};padding-right:14px">Telefono</td><td>${opts.phone}</td></tr>` : ""}
+        ${opts.email ? `<tr><td style="color:${SOFT};padding-right:14px">Email</td><td>${opts.email}</td></tr>` : ""}
+        ${opts.source === "salon" ? `<tr><td style="color:${SOFT};padding-right:14px">Origine</td><td>compilata in salone</td></tr>` : ""}
+      </table>`;
+
+  const orientamento = result.hasAlert
+    ? ""
+    : `
+      <div style="background:${ACCENT_SOFT};border-radius:12px;padding:14px 16px;margin:0 0 14px">
+        <div style="font-size:16px;font-weight:bold;color:${INK}">${top.label} · ${result.pct[best]}%</div>
+        <div style="font-size:13px;color:#7A5232;margin-top:4px">${top.desc}</div>
+      </div>
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 6px">
+        ${AXES.map((a) => bar(a.label, result.pct[a.k], a.k === best)).join("")}
+      </table>`;
+
+  const cautele =
+    result.tags.length > 0
+      ? `
+      <p style="margin:14px 0 6px;font-weight:bold">Cautele tecniche</p>
+      <ul style="margin:0 0 14px 18px;color:${SOFT}">
+        ${result.tags.map((t) => `<li>${t}</li>`).join("")}
+      </ul>`
+      : "";
+
+  const linkScheda = checkId
+    ? `
+      <div style="text-align:center;margin:20px 0 4px">
+        <a href="${SITE_URL}/scheda/${checkId}"
+           style="display:inline-block;background:${ACCENT};color:#fff;text-decoration:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:bold">
+          Apri la scheda
+        </a>
+      </div>`
+    : "";
+
+  const html = `
+  <div style="background:${BG};padding:28px 14px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:${INK}">
+    <div style="max-width:560px;margin:0 auto">
+      <div style="text-align:center;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:${ACCENT};margin-bottom:14px">
+        ${salonName} · Trimmer Check
+      </div>
+      <div style="background:${CARD};border:1px solid ${LINE};border-radius:16px;padding:26px 24px;font-size:16px;line-height:1.55">
+        <p style="margin:0 0 14px">È appena stato completato un questionario.</p>
+        ${badge}
+        ${contatti}
+        ${orientamento}
+        ${cautele}
+        ${linkScheda}
+      </div>
+      <div style="text-align:center;font-size:12px;color:${SOFT};margin-top:14px">
+        Avviso automatico per il salone. Le schede complete sono nell&rsquo;area riservata.
+      </div>
+    </div>
+  </div>`;
+
+  await transporter().sendMail({
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    to,
+    subject,
+    html,
+  });
+}
